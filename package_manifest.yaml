@@ -1,0 +1,72 @@
+# roboarm body description — URDF + robot_state_publisher.
+#
+# This package owns the static + joint-driven TF tree for THIS robot:
+#
+#   base_link → link1 … link6 → rh_adapter_joint → rh_hand_base_link → 11 hand links
+#
+# i.e. the Piper arm with the gripper removed, a Ø39 mm / 17.5 mm coaxial
+# adapter on the link6 flange, and the LinkerHand O6 RIGHT hand. It is what
+# makes the 连接件 (adapter) real to the rest of the system: the arm driver and
+# the hand driver never model it, they only publish joint feedback — the
+# geometry between them lives here.
+#
+# Driven from /arm/joint_states_single via robot_state_publisher.
+#
+# WHY THIS PACKAGE EXISTS (and why it is not upstream's piper description):
+#   `robonix.primitive.agilex.piper.description` publishes
+#   `base_link → … → link6 (→ gripper links)` — a Piper with a gripper. Ours
+#   ends in a dexterous hand bolted on through an adapter, so the mesh set and
+#   the chain are different. Same reason the IK service and the flat-grasp
+#   skill cannot use the upstream arm model either.
+#
+# WHAT IT DOES NOT HAVE, ON PURPOSE:
+#   * no routed capabilities. TF in ROS 2 is a global side-channel — every
+#     tf2-aware node joins /tf + /tf_static by itself — so atlas-routing it
+#     would only add indirection. The only contract declared is the shared
+#     lifecycle driver, which is what gives us CMD_INIT (spawn `ros2 launch`)
+#     and CMD_SHUTDOWN (kill the launch tree).
+#   * no camera hand-eye. Hand-eye for the flat grasp is the 2D homography
+#     consumed by service-roboarm-grasp-pose-rbnx.
+#   * no gripper frames. The upstream URDF's gripper_base/link7/link8 and
+#     joint7/joint8 are stripped by urdf/make_urdf.py.
+#
+# HAND FINGER FRAMES SIT AT ZERO: the hand primitive serves its state through
+# the gRPC `robonix/primitive/hand/get_state` rpc, not as a ROS JointState, so
+# robot_state_publisher never hears about finger motion and the 11 hand links
+# stay wherever the URDF puts them. That is fine — the grasp pipeline uses
+# link6 + the palm, both of which are rigid. Driving finger TF would mean
+# re-publishing hand joint states as ROS and merging them into the arm's
+# joint_states stream.
+#
+# Boot ordering: MUST come after piper_ctl (which publishes
+# /arm/joint_states_single). robot_state_publisher stays quiet on /tf until it
+# receives its first JointState, which is exactly why this ordering matters.
+#
+# Frame names are NOT prefixed with `arm/`, matching the URDF. A deploy that
+# stacks this robot on a mobile base would need a tf_prefix here.
+manifestVersion: 1
+
+package:
+  name: robonix.primitive.roboarm.description
+  version: 0.1.0
+  vendor: robonix
+  description: >-
+    Body description for the Piper + adapter + LinkerHand O6 robot: URDF,
+    meshes and a robot_state_publisher wrapper that owns the TF tree.
+  license: MulanPSL-2.0
+  tags: [primitive, description, urdf, tf, robot_state_publisher, piper, linkerhand, ros2]
+  maintainers:
+    - Joker.Yun <2353493891@qq.com>
+
+capability_id: roboarm_description
+
+build: bash scripts/build.sh
+start: bash scripts/start.sh
+
+capabilities:
+  # The shared lifecycle contract. Explicit rather than omitted: codegen turns
+  # it into the Driver servicer that scripts/atlas_register_and_launch.py binds
+  # `@cap.on_init` / `@cap.on_shutdown` to.
+  - name: robonix/lifecycle/driver
+
+depends: []
