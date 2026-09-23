@@ -88,7 +88,7 @@ EXPECTED_HAND_JOINTS = {
 }
 
 HEADER = """\
-  <!-- 由 robonix/packages/primitive-roboarm-description-rbnx/urdf/make_urdf.py 生成，请勿手改。
+  <!-- 由 robonix/packages/primitive-piper_with_linkerhand-description-rbnx/urdf/make_urdf.py 生成，请勿手改。
        Piper(去夹爪) + 17.5mm 同轴连接件 + LinkerHand O6 右手。
        重新生成: python3 urdf/make_urdf.py -->"""
 

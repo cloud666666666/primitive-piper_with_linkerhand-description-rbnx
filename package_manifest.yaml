@@ -26,7 +26,7 @@
 #     lifecycle driver, which is what gives us CMD_INIT (spawn `ros2 launch`)
 #     and CMD_SHUTDOWN (kill the launch tree).
 #   * no camera hand-eye. Hand-eye for the flat grasp is the 2D homography
-#     consumed by service-roboarm-grasp-pose-rbnx.
+#     consumed by service-piper_with_linkerhand-grasp-pose-rbnx.
 #   * no gripper frames. The upstream URDF's gripper_base/link7/link8 and
 #     joint7/joint8 are stripped by urdf/make_urdf.py.
 #
@@ -47,7 +47,7 @@
 manifestVersion: 1
 
 package:
-  name: robonix.primitive.roboarm.description
+  name: robonix.primitive.piper_with_linkerhand.description
   version: 0.1.0
   vendor: robonix
   description: >-

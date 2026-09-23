@@ -25,7 +25,7 @@ serves state over the gRPC `get_state` rpc, not as a ROS JointState, so RSP
 never hears finger motion. Nothing in the grasp pipeline needs finger TF —
 it uses link6 and the palm, both rigid relative to the flange.
 
-Camera hand-eye is NOT published here: service-roboarm-grasp-pose-rbnx maps image
+Camera hand-eye is NOT published here: service-piper_with_linkerhand-grasp-pose-rbnx maps image
 pixels to arm/base_link XY through a calibrated 2D homography.
 
 Launch arguments:

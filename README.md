@@ -1,9 +1,9 @@
-# primitive-roboarm-description-rbnx
+# primitive-piper_with_linkerhand-description-rbnx
 
 Body description for the **roboarm** deploy: AgileX Piper (gripper removed) +
 Ø39 mm / 17.5 mm coaxial adapter + LinkerHand O6 dexterous hand (right).
 
-Catalog name: `robonix.primitive.roboarm.description`.
+Catalog name: `robonix.primitive.piper_with_linkerhand.description`.
 
 This package owns the static + joint-driven TF tree for the robot:
 
